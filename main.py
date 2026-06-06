@@ -17,9 +17,9 @@ log = logging.getLogger(__name__)
 
 BASE_URL = "https://diplomacia.com.tr/api"
 PERKS = {
-    'barracks':       {'label': 'BARRACKS',        'key': 'barracks'},
-    'war_techniques': {'label': 'WAR TECHNIQUES',  'key': 'war_techniques'},
-    'scientist':      {'label': 'SCIENTIST',        'key': 'bilim_insani'},
+    'barracks':       {'label': 'BARRACKS',       'key': 'kisla'},
+    'war_techniques': {'label': 'WAR TECHNIQUES', 'key': 'savas_teknikleri'},
+    'scientist':      {'label': 'SCIENTIST',       'key': 'bilim_insani'},
 }
 
 # ── HTML مدمج ──────────────────────────────────────
@@ -548,16 +548,15 @@ def do_upgrade(acc_id):
     perk_key = PERKS[acc['perk']]['key']
     currency = acc['currency']  # 'money' or 'diamond'
 
-    # الـ endpoint الصح اللي شفناه في Network tab
-    # POST /api/players/skills/upgrade
-    # جرب payloads مختلفة للـ skill key
-    payloads_to_try = [
-        {'skill': perk_key, 'currency': currency},
-        {'skillType': perk_key, 'currency': currency},
-        {'type': perk_key, 'currency': currency},
-        {'skill': perk_key, 'paymentType': currency},
-        {'skill': perk_key},
-    ]
+    # الـ payload الصح المؤكد من Network tab:
+    # {"skill": "kisla", "type": "money"}
+    # {"skill": "bilim_insani", "type": "money"}
+    # {"skill": "savas_teknikleri", "type": "diamond"}
+    # الـ field اسمه "type" مش "currency"!
+
+    payload = {'skill': perk_key, 'type': currency}
+
+    payloads_to_try = [payload]  # الـ payload الصح أولاً
 
     for payload in payloads_to_try:
         status, resp = api_post(acc['token'], '/players/skills/upgrade', payload)
