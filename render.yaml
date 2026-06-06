@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: diplomacia-bot
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/state
+    envVars:
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        value: admin123
+      - key: SECRET_KEY
+        value: diplo-secret-2024
